@@ -12,6 +12,7 @@
 #include <QtCore/QVariant>
 #include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
+#include <QtWidgets/QFrame>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QLineEdit>
@@ -35,8 +36,11 @@ public:
     QHBoxLayout *horizontalLayout;
     QLabel *label;
     QLineEdit *serverName;
+    QLabel *label_2;
+    QLineEdit *server_port;
     QHBoxLayout *horizontalLayout_4;
-    QPushButton *downloadData;
+    QPushButton *connectToServer;
+    QFrame *line;
     QVBoxLayout *verticalLayout_2;
     QPushButton *Register;
     QPushButton *logIn;
@@ -50,7 +54,7 @@ public:
     {
         if (client->objectName().isEmpty())
             client->setObjectName(QStringLiteral("client"));
-        client->resize(400, 300);
+        client->resize(616, 438);
         client->setStyleSheet(QLatin1String("QToolTip {\n"
 "    border: 1px solid #76797C;\n"
 "    background-color: #5A7566;\n"
@@ -1337,7 +1341,7 @@ public:
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         verticalLayoutWidget = new QWidget(centralWidget);
         verticalLayoutWidget->setObjectName(QStringLiteral("verticalLayoutWidget"));
-        verticalLayoutWidget->setGeometry(QRect(10, 10, 381, 181));
+        verticalLayoutWidget->setGeometry(QRect(10, 10, 601, 181));
         verticalLayout = new QVBoxLayout(verticalLayoutWidget);
         verticalLayout->setSpacing(6);
         verticalLayout->setContentsMargins(11, 11, 11, 11);
@@ -1356,19 +1360,38 @@ public:
 
         horizontalLayout->addWidget(serverName);
 
+        label_2 = new QLabel(verticalLayoutWidget);
+        label_2->setObjectName(QStringLiteral("label_2"));
+
+        horizontalLayout->addWidget(label_2);
+
+        server_port = new QLineEdit(verticalLayoutWidget);
+        server_port->setObjectName(QStringLiteral("server_port"));
+        server_port->setMaximumSize(QSize(100, 16777215));
+        server_port->setMaxLength(4);
+
+        horizontalLayout->addWidget(server_port);
+
 
         verticalLayout->addLayout(horizontalLayout);
 
         horizontalLayout_4 = new QHBoxLayout();
         horizontalLayout_4->setSpacing(6);
         horizontalLayout_4->setObjectName(QStringLiteral("horizontalLayout_4"));
-        downloadData = new QPushButton(verticalLayoutWidget);
-        downloadData->setObjectName(QStringLiteral("downloadData"));
+        connectToServer = new QPushButton(verticalLayoutWidget);
+        connectToServer->setObjectName(QStringLiteral("connectToServer"));
 
-        horizontalLayout_4->addWidget(downloadData);
+        horizontalLayout_4->addWidget(connectToServer);
 
 
         verticalLayout->addLayout(horizontalLayout_4);
+
+        line = new QFrame(verticalLayoutWidget);
+        line->setObjectName(QStringLiteral("line"));
+        line->setFrameShape(QFrame::HLine);
+        line->setFrameShadow(QFrame::Sunken);
+
+        verticalLayout->addWidget(line);
 
         verticalLayout_2 = new QVBoxLayout();
         verticalLayout_2->setSpacing(6);
@@ -1392,7 +1415,7 @@ public:
         client->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(client);
         menuBar->setObjectName(QStringLiteral("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 400, 25));
+        menuBar->setGeometry(QRect(0, 0, 616, 25));
         menuKlient = new QMenu(menuBar);
         menuKlient->setObjectName(QStringLiteral("menuKlient"));
         client->setMenuBar(menuBar);
@@ -1415,7 +1438,9 @@ public:
         client->setWindowTitle(QApplication::translate("client", "client", nullptr));
         label->setText(QApplication::translate("client", "Nazwa serwera: ", nullptr));
         serverName->setText(QApplication::translate("client", "localhost", nullptr));
-        downloadData->setText(QApplication::translate("client", "Pobierz dane", nullptr));
+        label_2->setText(QApplication::translate("client", "Port: ", nullptr));
+        server_port->setText(QApplication::translate("client", "1024", nullptr));
+        connectToServer->setText(QApplication::translate("client", "Po\305\202\304\205cz ", nullptr));
         Register->setText(QApplication::translate("client", "Zarejestruj si\304\231", nullptr));
         logIn->setText(QApplication::translate("client", "Zaloguj si\304\231", nullptr));
         label1->setText(QString());

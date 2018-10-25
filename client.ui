@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>300</height>
+    <width>616</width>
+    <height>438</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -1273,7 +1273,7 @@ QDateEdit::down-arrow:focus {
      <rect>
       <x>10</x>
       <y>10</y>
-      <width>381</width>
+      <width>601</width>
       <height>181</height>
      </rect>
     </property>
@@ -1294,18 +1294,48 @@ QDateEdit::down-arrow:focus {
          </property>
         </widget>
        </item>
+       <item>
+        <widget class="QLabel" name="label_2">
+         <property name="text">
+          <string>Port: </string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="server_port">
+         <property name="maximumSize">
+          <size>
+           <width>100</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>1024</string>
+         </property>
+         <property name="maxLength">
+          <number>4</number>
+         </property>
+        </widget>
+       </item>
       </layout>
      </item>
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout_4">
        <item>
-        <widget class="QPushButton" name="downloadData">
+        <widget class="QPushButton" name="connectToServer">
          <property name="text">
-          <string>Pobierz dane</string>
+          <string>Połącz </string>
          </property>
         </widget>
        </item>
       </layout>
+     </item>
+     <item>
+      <widget class="Line" name="line">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
      </item>
      <item>
       <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -1346,7 +1376,7 @@ QDateEdit::down-arrow:focus {
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>400</width>
+     <width>616</width>
      <height>25</height>
     </rect>
    </property>

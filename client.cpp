@@ -9,16 +9,18 @@ client::client(QWidget* parent)
     ui->setupUi(this);
     socket = new QTcpSocket(this);
     connect(socket, SIGNAL(readyRead()), this, SLOT(readFortune()));
+    ui->logIn->setDisabled(1);
+    ui->Register->setDisabled(1);
 }
 
 bool client::connectToServer()
 {
-    blockSize = 0;
-
-    socket->connectToHost(ui->serverName->text(), 1024, QIODevice::ReadWrite);
+    socket->connectToHost(ui->serverName->text(), ui->server_port->text().toInt(), QIODevice::ReadWrite);
     if (socket->state() == QAbstractSocket::ConnectedState) {
         QMessageBox::information(this, tr("Komunikat aplikacji klienckiej"),
             tr("Połączono "));
+        ui->Register->setEnabled(1);
+        ui->logIn->setEnabled(1);
     }
     return socket->waitForConnected();
 }
@@ -30,51 +32,14 @@ QByteArray IntToArray(qint32 source) //Use qint32 to ensure that the number have
     data << source;
     return temp;
 }
-qint32 ArrayToInt(QByteArray source)
-{
-    qint32 temp;
-    QDataStream data(&source, QIODevice::ReadWrite);
-    data >> temp;
-    return temp;
-}
+
 void client::readFortune()
 {
 
 
  QByteArray line = socket->readLine();
- qDebug() << "moze"+line;
-//    QByteArray* buffering = new QByteArray();
-//    qint32* a = new qint32(0);
-//    buffers.insert(socket, buffering);
-//    sizes.insert(socket, a);
-//    QByteArray* buffer = buffers.value(socket);
-//    buffer->append(socket->readAll());
-//    qint32* s = sizes.value(socket);
-//    qint32 size = *s;
-//    qDebug()<< buffer;
-//    while (socket->bytesAvailable() > 0) {
+ qDebug() << line;
 
-//        while ((size == 0 && buffer->size() >= 4) || (size > 0 && buffer->size() >= size)) //While can process data, process it
-//        {
-//            qDebug()<< "1while";
-//            if (size == 0 && buffer->size() >= 4) //jesli rozmiar dotarl zapisz
-//            {
-//                size = ArrayToInt(buffer->mid(0, 4));
-//                *s = size;
-//                buffer->remove(0, 4);
-//                qDebug()<< "1if";
-//            }
-//            if (size > 0 && buffer->size() >= size) // jezeli doszly cale wyemiutuj
-//            {
-//                QByteArray data = buffer->mid(0, size);
-//                buffer->remove(0, size);
-//                size = 0;
-//                *s = size;
-
-//                qDebug() << data;
-
-//            }
-//        }}
 }
 bool client::writeData(QByteArray data)
 {
@@ -94,15 +59,15 @@ client::~client()
     delete ui;
 }
 
-void client::on_downloadData_clicked()
-{
-    connectToServer();
-}
-
 void client::on_Register_clicked()
 {
     QString a = "log|anal|iza|to powinno byc cale";
     QByteArray data;
     data.append(a);
     writeData(data);
+}
+
+void client::on_connectToServer_clicked()
+{
+       connectToServer();
 }
