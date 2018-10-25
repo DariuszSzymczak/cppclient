@@ -16,17 +16,24 @@ class client : public QMainWindow
 public:
     explicit client(QWidget *parent = nullptr);
     ~client();
-    void connectSrv();
-    void displayError(QLocalSocket::LocalSocketError socketError);
-    void getData();
+    bool connectToServer();
+    void displayError(QLocalSocket::LocalSocketError);
+    bool writeData(QByteArray);
+
+private slots:
+    void on_downloadData_clicked();
+
+        void readFortune();
+        void on_Register_clicked();
 
 private:
     Ui::client *ui;
-    QLocalSocket *socket;
+    QTcpSocket  *socket;
     QDataStream in;
     quint32 blockSize;
+    QString currentFortune;
 
-    QString currentData;
+      QNetworkSession *networkSession = nullptr;
 };
 
 #endif // CLIENT_H

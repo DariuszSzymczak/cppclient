@@ -1,88 +1,74 @@
 #include "client.h"
 #include "ui_client.h"
 
-client::client(QWidget *parent) :
-    QMainWindow(parent),
-    ui(new Ui::client),
-    socket(new QLocalSocket(this))
+client::client(QWidget* parent)
+    : QMainWindow(parent)
+    , ui(new Ui::client)
 {
     ui->setupUi(this);
-    in.setDevice(socket);
-    in.setVersion(QDataStream::Qt_5_10);
-
-    //przechwytywanie błędów
-    connect(socket, QOverload<QLocalSocket::LocalSocketError>::of(&QLocalSocket::error),
-                this, &client::displayError); // Nie ruszać
-
-    connect(ui->downloadData, &QPushButton::clicked,this, &client::connectSrv); //Pobiera dane
-    connect(socket, &QLocalSocket::readyRead, this, &client::getData); //Przetwarza jeśli są gotowe
+    socket = new QTcpSocket(this);
+    connect(socket, SIGNAL(readyRead()), this, SLOT(readFortune()));
 }
 
-
-void client::connectSrv()
+bool client::connectToServer()
 {
     blockSize = 0;
-    socket->abort();
-    socket->connectToServer(ui->serverName->text());
-    if(socket->state() == QAbstractSocket::ConnectedState)
-    {
+
+    socket->connectToHost(ui->serverName->text(), 1024, QIODevice::ReadWrite);
+    if (socket->state() == QAbstractSocket::ConnectedState) {
         QMessageBox::information(this, tr("Komunikat aplikacji klienckiej"),
-                                 tr("Połączono "));
+            tr("Połączono "));
     }
-
+    return socket->waitForConnected();
 }
-//  Przetwarzanie danych otrzymanych od serwera
-void client::getData()
+QByteArray IntToArray(qint32 source) //Use qint32 to ensure that the number have 4 bytes
 {
-    if(blockSize == 0)
-    {
-        if(socket->bytesAvailable() < (int)sizeof (quint32))
-        {
-            return;
-        }
+    //Avoid use of cast, this is the Qt way to serialize objects
+    QByteArray temp;
+    QDataStream data(&temp, QIODevice::ReadWrite);
+    data << source;
+    return temp;
+}
+void client::readFortune()
+{
+    in.startTransaction();
 
-        in >> blockSize;
+    QByteArray nextFortune;
+    in >> nextFortune;
 
-        if(socket->bytesAvailable() < blockSize || in.atEnd())
-            return;
+    if (!in.commitTransaction())
+        return;
 
-        QString newDane;
-        in >> newDane;
+    currentFortune = nextFortune;
+    qDebug() << currentFortune;
+}
+bool client::writeData(QByteArray data)
+{
 
-        currentData = newDane;
-        ui->label1->setText(currentData);
+    if (socket->state() == QAbstractSocket::ConnectedState) {
+        socket->write(IntToArray(data.size())); //write size of data
+        socket->write(data); //write the data itself
+        return socket->waitForBytesWritten();
     }
+    else
+        return false;
 }
 
-//------------------------------------------------------
-//Przechwytywanie wszystkich możliwych rodzajów błędów.
-//Podpiętę pod funkcję connect w client::client.
-//Nie kasować
-
-void client::displayError(QLocalSocket::LocalSocketError socketError)
-{
-    switch (socketError) {
-        case QLocalSocket::ServerNotFoundError:
-            QMessageBox::information(this, tr("Komunikat aplikacji klienckiej"),
-                                     tr("Nie znaleziono serwera. Upewnij się, czy serwer działa "
-                                        "oraz czy jego nazwa została podana poprawnie. "));
-            break;
-        case QLocalSocket::ConnectionRefusedError:
-            QMessageBox::information(this, tr("Komunikat aplikacji klienckiej"),
-                                     tr("Połączenie zostało odrzucone. "
-                                        "Upewnij się, czy serwer działa "
-                                        "oraz czy jego nazwa została podana poprawnie."));
-            break;
-        case QLocalSocket::PeerClosedError:
-            break;
-        default:
-            QMessageBox::information(this, tr("Komunikat aplikacji klienckiej"),
-                                     tr("Wystąpił błąd: %1.")
-                                     .arg(socket->errorString()));
-        }
-}
 //-----------------------------------------------------
 client::~client()
 {
     delete ui;
+}
+
+void client::on_downloadData_clicked()
+{
+    connectToServer();
+}
+
+void client::on_Register_clicked()
+{
+    QString a = "log|anal|iza|to powinno byc cale";
+    QByteArray data;
+    data.append(a);
+    writeData(data);
 }
