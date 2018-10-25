@@ -1,5 +1,6 @@
 #include "client.h"
 #include "ui_client.h"
+static inline qint32 ArrayToInt(QByteArray source);
 
 client::client(QWidget* parent)
     : QMainWindow(parent)
@@ -29,18 +30,51 @@ QByteArray IntToArray(qint32 source) //Use qint32 to ensure that the number have
     data << source;
     return temp;
 }
+qint32 ArrayToInt(QByteArray source)
+{
+    qint32 temp;
+    QDataStream data(&source, QIODevice::ReadWrite);
+    data >> temp;
+    return temp;
+}
 void client::readFortune()
 {
-    in.startTransaction();
 
-    QByteArray nextFortune;
-    in >> nextFortune;
 
-    if (!in.commitTransaction())
-        return;
+ QByteArray line = socket->readLine();
+ qDebug() << "moze"+line;
+//    QByteArray* buffering = new QByteArray();
+//    qint32* a = new qint32(0);
+//    buffers.insert(socket, buffering);
+//    sizes.insert(socket, a);
+//    QByteArray* buffer = buffers.value(socket);
+//    buffer->append(socket->readAll());
+//    qint32* s = sizes.value(socket);
+//    qint32 size = *s;
+//    qDebug()<< buffer;
+//    while (socket->bytesAvailable() > 0) {
 
-    currentFortune = nextFortune;
-    qDebug() << currentFortune;
+//        while ((size == 0 && buffer->size() >= 4) || (size > 0 && buffer->size() >= size)) //While can process data, process it
+//        {
+//            qDebug()<< "1while";
+//            if (size == 0 && buffer->size() >= 4) //jesli rozmiar dotarl zapisz
+//            {
+//                size = ArrayToInt(buffer->mid(0, 4));
+//                *s = size;
+//                buffer->remove(0, 4);
+//                qDebug()<< "1if";
+//            }
+//            if (size > 0 && buffer->size() >= size) // jezeli doszly cale wyemiutuj
+//            {
+//                QByteArray data = buffer->mid(0, size);
+//                buffer->remove(0, size);
+//                size = 0;
+//                *s = size;
+
+//                qDebug() << data;
+
+//            }
+//        }}
 }
 bool client::writeData(QByteArray data)
 {
