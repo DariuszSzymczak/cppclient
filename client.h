@@ -4,7 +4,7 @@
 #include <QMainWindow>
 #include <QtWidgets>
 #include <QtNetwork>
-
+#include "userregister.h"
 namespace Ui {
 class client;
 }
@@ -19,17 +19,16 @@ public:
     bool connectToServer();
     void displayError(QLocalSocket::LocalSocketError);
     bool writeData(QByteArray);
-
+    void showMainWindow();
 private slots:
-    void on_downloadData_clicked();
-
         void readFortune();
         void on_Register_clicked();
-
-        void on_connectToServer_clicked();
+        void getRegisterData(QString);
+        void on_connectTo_clicked();
 
 private:
     Ui::client *ui;
+    userRegister *registerForm;
     QTcpSocket  *socket;
 };
 

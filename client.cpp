@@ -35,9 +35,40 @@ QByteArray IntToArray(qint32 source) //Use qint32 to ensure that the number have
 
 void client::readFortune()
 {
+    QByteArray line = socket->readLine();
+    QList<QByteArray> dane = line.split('|');
+    QString check = dane.takeAt(0);
 
+    if (check == "log")
+    {
+        QByteArray login = dane.takeAt(0);
+        QByteArray password = dane.takeAt(0); //poprzednie wywolanie wyciaga QByteArray i ten staje sie 1
+            if (login != "" && password != "")
+            {
 
- QByteArray line = socket->readLine();
+            }
+    }
+    else if(check == "reg")
+    {
+                QString login = dane.takeAt(0);
+                if(login != "")
+                {
+                    QString password = dane.takeAt(0);
+                QMessageBox::information(this, tr("Komunikat aplikacji klienckiej"),
+                    tr("Użytkownik %1 zarejestrowany pomyślnie!\nHasło: %2")
+                                         .arg(login).arg(password));
+                }
+
+     }
+    else if(check== "send")
+    {
+
+    }
+    else if(check=="get")
+    {
+
+    }
+
  qDebug() << line;
 
 }
@@ -58,16 +89,27 @@ client::~client()
 {
     delete ui;
 }
-
+void client::showMainWindow()
+{
+    ui->centralWidget->show();
+}
 void client::on_Register_clicked()
 {
-    QString a = "log|anal|iza|to powinno byc cale";
-    QByteArray data;
-    data.append(a);
-    writeData(data);
+    registerForm = new userRegister(this);
+
+    connect(registerForm, SIGNAL(registerUser(QString)), this, SLOT(getRegisterData(QString)));
+    registerForm->show();
 }
 
-void client::on_connectToServer_clicked()
+void client::getRegisterData(QString registerString)
 {
-       connectToServer();
+    qDebug()<<registerString;
+    QByteArray regArray;
+    regArray.append(registerString);
+    writeData(regArray);
+}
+
+void client::on_connectTo_clicked()
+{
+    connectToServer();
 }

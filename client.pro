@@ -28,13 +28,16 @@ CONFIG += c++11
 
 SOURCES += \
         main.cpp \
-        client.cpp
+        client.cpp \
+    userregister.cpp
 
 HEADERS += \
-        client.h
+        client.h \
+    userregister.h
 
 FORMS += \
-        client.ui
+        client.ui \
+    userregister.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
