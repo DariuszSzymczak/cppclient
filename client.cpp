@@ -8,6 +8,8 @@ client::client(QWidget* parent)
 {
     ui->setupUi(this);
     socket = new QTcpSocket(this);
+    loginForm = new LoginForm(this);
+    loginForm->hide();
     connect(socket, SIGNAL(readyRead()), this, SLOT(readFortune()));
     ui->logIn->setDisabled(1);
     ui->Register->setDisabled(1);
@@ -41,12 +43,15 @@ void client::readFortune()
 
     if (check == "log")
     {
-        QByteArray login = dane.takeAt(0);
-        QByteArray password = dane.takeAt(0); //poprzednie wywolanie wyciaga QByteArray i ten staje sie 1
-            if (login != "" && password != "")
-            {
-
-            }
+        QString response = dane.takeAt(0);
+        if(response == "1"){
+            loginForm->close();
+            fileList = new FileList(this);
+            fileList->show();
+        } else {
+            loginForm->setResponse("Niepoprawny login lub hasło");
+        }
+        qDebug() << "Response  " << response;
     }
     else if(check == "reg")
     {
@@ -109,7 +114,25 @@ void client::getRegisterData(QString registerString)
     writeData(regArray);
 }
 
+void client::sendLoginData(QString loginString)
+{
+    qDebug()<<loginString;
+    login = loginForm->getLogin();
+    QByteArray regArray;
+    regArray.append(loginString);
+    writeData(regArray);
+}
+
 void client::on_connectTo_clicked()
 {
     connectToServer();
+}
+
+void client::on_logIn_clicked()
+{
+
+    loginForm->show();
+    ui->centralWidget->hide();
+    connect(loginForm, SIGNAL(closeWindow()), this, SLOT(showMainWindow()));
+    connect(loginForm, SIGNAL(loginUser(QString)), this, SLOT(sendLoginData(QString)));
 }
