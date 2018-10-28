@@ -44,6 +44,8 @@ private:
     QString login;
     FileList * fileList;
       QString logUser;
+      QHash<QTcpSocket*, QByteArray*> buffers; //bufor do przetrzymywania danych az dojda cale
+      QHash<QTcpSocket*, qint32*> sizes;
 };
 
 #endif // CLIENT_H

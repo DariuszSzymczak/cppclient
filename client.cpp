@@ -42,104 +42,142 @@ QByteArray IntToArray(qint32 source) //Use qint32 to ensure that the number have
     data << source;
     return temp;
 }
-
+qint32 ArrayToInt(QByteArray source)
+{
+    qint32 temp;
+    QDataStream data(&source, QIODevice::ReadWrite);
+    data >> temp;
+    return temp;
+}
 void client::readFortune()
 {
-    QByteArray line = socket->readLine();
-    QList<QByteArray> dane = line.split('|');
-    QString check = dane.takeAt(0);
+    //ZOBACZYMY CZY DZIALA
+    QByteArray* buffera = new QByteArray();
+    qint32* a = new qint32(0);
+    buffers.insert(socket, buffera);
+    sizes.insert(socket, a);
 
 
-    if (check == "log")
-    {
-        QString response = dane.takeAt(0);
-        if(response == "success")
+    QByteArray* buffer = buffers.value(socket);
+    qint32* s = sizes.value(socket);
+    qint32 size = *s;
+    while (socket->bytesAvailable() > 0) {
+        buffer->append(socket->readAll());
+        while ((size == 0 && buffer->size() >= 4) || (size > 0 && buffer->size() >= size)) //While can process data, process it
         {
-            fileList = new FileList(this);
-            loginForm->close();
-            fileList->show();
-            logUser = dane.takeAt(0);
-            QString trash = dane.takeAt(0);//------------------------------------------------
-            QString trash2 = dane.takeAt(0);//-ZMIENNE USUWAJĄCE ZŁE ODP Z SERWERA-----------
-            QString trash3 = dane.takeAt(0);//-----------------------------------------------
-             fileList->updateAll(dane);
-            fileList->setLogin(logUser);
-            connect(fileList, SIGNAL(sendFile(QByteArray)), this, SLOT(sendFileToServer(QByteArray)));
-            connect(fileList, SIGNAL(getFile(QByteArray)), this, SLOT(downloadFromServer(QByteArray)));
-            QMessageBox::information(this, tr("Komunikat aplikacji klienckiej"),
-                tr("Użytkownik %1 zalogowany pomyślnie!")
-                                     .arg(logUser));
-            }
-            else if(response == "error")
+            if (size == 0 && buffer->size() >= 4) //jesli rozmiar dotarl zapisz
             {
-                QMessageBox::information(this, tr("Komunikat aplikacji klienckiej"),
-                    tr("Błędny login lub hasło"));
+                size = ArrayToInt(buffer->mid(0, 4));
+                *s = size;
+                buffer->remove(0, 4);
             }
-            qDebug() << "Response  " << response;
-        }
-    else if(check == "reg")
-    {
-         QString login = dane.takeAt(0);
-         if(login != "")
-         {
-             QString password = dane.takeAt(0);
-             QMessageBox::information(this, tr("Komunikat aplikacji klienckiej"),
-             tr("Użytkownik %1 zarejestrowany pomyślnie!\nHasło: %2")
-             .arg(login).arg(password));
-         }
-    }
-    else if(check == "send")
-    {
-        qDebug() << "POWINNO UPDATOWAC";
-        fileList = new FileList(this);
-        fileList->show();
-        fileList->setLogin(logUser);
-        connect(fileList, SIGNAL(sendFile(QByteArray)), this, SLOT(sendFileToServer(QByteArray)));
-        connect(fileList, SIGNAL(getFile(QByteArray)), this, SLOT(downloadFromServer(QByteArray)));
-        QString response = dane.takeAt(0);
-        QString trash = dane.takeAt(0);//------------------------------------------------
-        QString trash2 = dane.takeAt(0);//-ZMIENNE USUWAJĄCE ZŁE ODP Z SERWERA-----------
-        QString trash3 = dane.takeAt(0);//-----------------------------------------------
-        fileList->updateAll(dane);
-        if(response == "success")
-        {
-            fileList->showSuccess();
-        }
-        else
-        {
-            fileList->showError();
-        }
+            if (size > 0 && buffer->size() >= size) // jezeli doszly cale wyemiutuj
+            {
+                QByteArray data = buffer->mid(0, size);
+                buffer->remove(0, size);
+                size = 0;
+                *s = size;
 
-    }
-    else if(check=="get")
-    {
-        qDebug() << "Przyszedł plik";
-        QString login = dane.takeAt(0);
-        QString filename = dane.takeAt(0);
-        int toRemove = 4+login.length()+1+filename.length()+1;
-        if (login != "" && filename != "")
-        {
-                FileManager * fm = new FileManager(this);
-                QFile * plik = new QFile(filename);
-                fm->createDirectory(login);
-                if (!plik->open(QIODevice::ReadWrite))
+                qDebug() << data;
+
+
+                QList<QByteArray> dane = data.split('|');
+                QString check = dane.takeAt(0);
+
+
+                if (check == "log")
                 {
+                    QString response = dane.takeAt(0);
+                    if(response == "success")
+                    {
+                        fileList = new FileList(this);
+                        loginForm->close();
+                        fileList->show();
+                        logUser = dane.takeAt(0);
+                        QString trash = dane.takeAt(0);//------------------------------------------------
+                        QString trash2 = dane.takeAt(0);//-ZMIENNE USUWAJĄCE ZŁE ODP Z SERWERA-----------
+                        QString trash3 = dane.takeAt(0);//-----------------------------------------------
+                         fileList->updateAll(dane);
+                        fileList->setLogin(logUser);
+                        connect(fileList, SIGNAL(sendFile(QByteArray)), this, SLOT(sendFileToServer(QByteArray)));
+                        connect(fileList, SIGNAL(getFile(QByteArray)), this, SLOT(downloadFromServer(QByteArray)));
+                        QMessageBox::information(this, tr("Komunikat aplikacji klienckiej"),
+                            tr("Użytkownik %1 zalogowany pomyślnie!")
+                                                 .arg(logUser));
+                        }
+                        else if(response == "error")
+                        {
+                            QMessageBox::information(this, tr("Komunikat aplikacji klienckiej"),
+                                tr("Błędny login lub hasło"));
+                        }
+                        qDebug() << "Response  " << response;
+                    }
+                else if(check == "reg")
+                {
+                     QString login = dane.takeAt(0);
+                     if(login != "")
+                     {
+                         QString password = dane.takeAt(0);
+                         QMessageBox::information(this, tr("Komunikat aplikacji klienckiej"),
+                         tr("Użytkownik %1 zarejestrowany pomyślnie!\nHasło: %2")
+                         .arg(login).arg(password));
+                     }
+                }
+                else if(check == "send")
+                {
+                    qDebug() << "POWINNO UPDATOWAC";
+                    fileList = new FileList(this);
+                    fileList->show();
+                    fileList->setLogin(logUser);
+                    connect(fileList, SIGNAL(sendFile(QByteArray)), this, SLOT(sendFileToServer(QByteArray)));
+                    connect(fileList, SIGNAL(getFile(QByteArray)), this, SLOT(downloadFromServer(QByteArray)));
+                    QString response = dane.takeAt(0);
+                    QString trash = dane.takeAt(0);//------------------------------------------------
+                    QString trash2 = dane.takeAt(0);//-ZMIENNE USUWAJĄCE ZŁE ODP Z SERWERA-----------
+                    QString trash3 = dane.takeAt(0);//-----------------------------------------------
+                    fileList->updateAll(dane);
+                    if(response == "success")
+                    {
+                        fileList->showSuccess();
+                    }
+                    else
+                    {
+                        fileList->showError();
+                    }
 
                 }
-                else
+                else if(check=="get")
                 {
-                    QByteArray buffer = line.remove(0,toRemove);
-                    plik->write(buffer);
-                    plik->close();
-                    fm->addFile(login,plik);
-                    qDebug() << "dodano";
-                    //tworzenie odpowiedzi dla klienta
+                    qDebug() << "Przyszedł plik";
+                    QString login = dane.takeAt(0);
+                    QString filename = dane.takeAt(0);
+                    int toRemove = 4+login.length()+1+filename.length()+1;
+                    if (login != "" && filename != "")
+                    {
+                            FileManager * fm = new FileManager(this);
+                            QFile * plik = new QFile(filename);
+                            fm->createDirectory(login);
+                            if (!plik->open(QIODevice::ReadWrite))
+                            {
+                                qDebug() << "taki chce otworzyc"+filename;
+                            }
+                            else
+                            {
+                                QByteArray buffer = data.remove(0,toRemove);
+                                plik->write(buffer);
+                                plik->close();
+                                fm->addFile(login,plik);
+                                qDebug() << "dodano";
+                                //tworzenie odpowiedzi dla klienta
 
+                            }
+                    }
                 }
+
+
+            }
         }
     }
-
- qDebug() << line;
 
 }
 bool client::writeData(QByteArray data)
