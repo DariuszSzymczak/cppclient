@@ -40,8 +40,8 @@ public:
         if (userRegister->objectName().isEmpty())
             userRegister->setObjectName(QStringLiteral("userRegister"));
         userRegister->resize(400, 350);
-        userRegister->setMinimumSize(QSize(0, 0));
-        userRegister->setMaximumSize(QSize(600, 400));
+        userRegister->setMinimumSize(QSize(400, 350));
+        userRegister->setMaximumSize(QSize(400, 350));
         userRegister->setStyleSheet(QLatin1String("#verticalLayout, .verticalLayout, QVBoxLayout{\n"
 "border:2px solid black;\n"
 "border-radius:5px;\n"

@@ -40,6 +40,8 @@ public:
         if (LoginForm->objectName().isEmpty())
             LoginForm->setObjectName(QStringLiteral("LoginForm"));
         LoginForm->resize(400, 350);
+        LoginForm->setMinimumSize(QSize(400, 350));
+        LoginForm->setMaximumSize(QSize(400, 350));
         LoginForm->setStyleSheet(QLatin1String("#verticalLayout, .verticalLayout, QVBoxLayout{\n"
 "border:2px solid black;\n"
 "border-radius:5px;\n"

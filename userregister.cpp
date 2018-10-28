@@ -1,6 +1,6 @@
 #include "userregister.h"
 #include "ui_userregister.h"
-
+#include <QCryptographicHash>
 userRegister::userRegister(QWidget *parent) :
     QWidget(parent, Qt::Window),
     ui(new Ui::userRegister)
@@ -21,7 +21,9 @@ void userRegister::on_pushButton_2_clicked()
 
 void userRegister::on_pushButton_clicked()
 {
-    QString registerString = "reg|"+ui->userLogin->text()+"|"+ui->userPassword->text()+"|";
+    QString password = ui->userPassword->text();
+    QString hashed = QString(QCryptographicHash::hash((password.toUtf8()),QCryptographicHash::Md5).toHex());
+    QString registerString = "reg|"+ui->userLogin->text()+"|"+hashed+"|";
     emit registerUser(registerString);
     this->close();
 }

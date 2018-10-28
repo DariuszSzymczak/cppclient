@@ -1286,7 +1286,7 @@ QDateEdit::down-arrow:focus {
       <x>10</x>
       <y>20</y>
       <width>581</width>
-      <height>181</height>
+      <height>241</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout">
@@ -1362,6 +1362,13 @@ QDateEdit::down-arrow:focus {
         <widget class="QPushButton" name="logIn">
          <property name="text">
           <string>Zaloguj się</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="disconnectClient">
+         <property name="text">
+          <string>Rozłącz</string>
          </property>
         </widget>
        </item>

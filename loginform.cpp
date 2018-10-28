@@ -1,5 +1,6 @@
 #include "loginform.h"
 #include "ui_loginform.h"
+#include <QCryptographicHash>
 
 LoginForm::LoginForm(QWidget *parent) :
     QWidget(parent, Qt::Window),
@@ -18,7 +19,9 @@ QString LoginForm::getLogin(){
 }
 
 QString LoginForm::getPassword(){
-    return ui->passwordInput->text();
+    QString password = ui->passwordInput->text();
+    QString hashed = QString(QCryptographicHash::hash((password.toUtf8()),QCryptographicHash::Md5).toHex());
+    return hashed;
 }
 
 void LoginForm::on_closeButton_clicked()

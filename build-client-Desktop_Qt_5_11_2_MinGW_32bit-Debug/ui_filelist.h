@@ -38,6 +38,8 @@ public:
         if (FileList->objectName().isEmpty())
             FileList->setObjectName(QStringLiteral("FileList"));
         FileList->resize(600, 414);
+        FileList->setMinimumSize(QSize(600, 414));
+        FileList->setMaximumSize(QSize(600, 414));
         FileList->setStyleSheet(QLatin1String("QToolTip {\n"
 "    border: 1px solid #76797C;\n"
 "    background-color: #5A7566;\n"

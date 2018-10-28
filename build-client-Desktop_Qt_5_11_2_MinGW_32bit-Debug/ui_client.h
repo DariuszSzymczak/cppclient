@@ -44,6 +44,7 @@ public:
     QVBoxLayout *verticalLayout_2;
     QPushButton *Register;
     QPushButton *logIn;
+    QPushButton *disconnectClient;
     QMenuBar *menuBar;
     QMenu *menuKlient;
     QToolBar *mainToolBar;
@@ -1342,7 +1343,7 @@ public:
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         verticalLayoutWidget = new QWidget(centralWidget);
         verticalLayoutWidget->setObjectName(QStringLiteral("verticalLayoutWidget"));
-        verticalLayoutWidget->setGeometry(QRect(10, 20, 581, 181));
+        verticalLayoutWidget->setGeometry(QRect(10, 20, 581, 241));
         verticalLayout = new QVBoxLayout(verticalLayoutWidget);
         verticalLayout->setSpacing(6);
         verticalLayout->setContentsMargins(11, 11, 11, 11);
@@ -1407,6 +1408,11 @@ public:
 
         verticalLayout_2->addWidget(logIn);
 
+        disconnectClient = new QPushButton(verticalLayoutWidget);
+        disconnectClient->setObjectName(QStringLiteral("disconnectClient"));
+
+        verticalLayout_2->addWidget(disconnectClient);
+
 
         verticalLayout->addLayout(verticalLayout_2);
 
@@ -1441,6 +1447,7 @@ public:
         connectTo->setText(QApplication::translate("client", "Po\305\202\304\205cz", nullptr));
         Register->setText(QApplication::translate("client", "Zarejestruj si\304\231", nullptr));
         logIn->setText(QApplication::translate("client", "Zaloguj si\304\231", nullptr));
+        disconnectClient->setText(QApplication::translate("client", "Roz\305\202\304\205cz", nullptr));
         menuKlient->setTitle(QApplication::translate("client", "Klient", nullptr));
     } // retranslateUi
 

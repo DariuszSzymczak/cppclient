@@ -18,21 +18,21 @@ client::client(QWidget* parent)
     registerForm = new userRegister(this);
     connect(registerForm, SIGNAL(registerUser(QString)), this, SLOT(getRegisterData(QString)));
 
-    connect(ui->connectTo, SIGNAL(clicked()), this, SLOT(connectToServer()));
     ui->logIn->setDisabled(1);
     ui->Register->setDisabled(1);
+    ui->disconnectClient->setDisabled(1);
 }
 
 bool client::connectToServer()
 {
     socket->connectToHost(ui->serverName->text(), ui->server_port->text().toInt(), QIODevice::ReadWrite);
-    if (socket->state() == QAbstractSocket::ConnectedState) {
+
+    if (socket->waitForConnected()) {
         QMessageBox::information(this, tr("Komunikat aplikacji klienckiej"),
             tr("Połączono "));
-        ui->Register->setEnabled(1);
-        ui->logIn->setEnabled(1);
+
     }
-    return socket->waitForConnected();
+    return 1;
 }
 QByteArray IntToArray(qint32 source) //Use qint32 to ensure that the number have 4 bytes
 {
@@ -49,14 +49,18 @@ qint32 ArrayToInt(QByteArray source)
     data >> temp;
     return temp;
 }
+void client::process()
+{
+    QByteArray* buffer = new QByteArray();
+    qint32* s = new qint32(0);
+    buffers.insert(socket, buffer);
+    sizes.insert(socket, s);
+}
 void client::readFortune()
 {
     //ZOBACZYMY CZY DZIALA
-    QByteArray* buffera = new QByteArray();
-    qint32* a = new qint32(0);
-    buffers.insert(socket, buffera);
-    sizes.insert(socket, a);
 
+    process();
 
     QByteArray* buffer = buffers.value(socket);
     qint32* s = sizes.value(socket);
@@ -191,11 +195,7 @@ bool client::writeData(QByteArray data)
     else
         return false;
 }
-void client::disconnectFromServer()
-{
-    qDebug() << "rozlaczono";
- socket->disconnectFromHost();
-}
+
 //-----------------------------------------------------
 client::~client()
 {
@@ -241,4 +241,20 @@ void client::downloadFromServer(QByteArray downloadString)
 {
     qDebug() << "Rozpoczęto pobieranie";
     writeData(downloadString);
+}
+
+void client::on_disconnectClient_clicked()
+{
+    socket->disconnectFromHost();
+    ui->logIn->setDisabled(1);
+    ui->Register->setDisabled(1);
+    ui->disconnectClient->setDisabled(1);
+}
+
+void client::on_connectTo_clicked()
+{
+    connectToServer();
+    ui->Register->setEnabled(1);
+    ui->logIn->setEnabled(1);
+    ui->disconnectClient->setEnabled(1);
 }

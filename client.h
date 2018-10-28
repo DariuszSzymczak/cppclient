@@ -30,8 +30,11 @@ private slots:
         void sendLoginData(QString);
         void on_logIn_clicked();
         void sendFileToServer(QByteArray);
-        void disconnectFromServer();
         void downloadFromServer(QByteArray);
+        void on_disconnectClient_clicked();
+
+        void on_connectTo_clicked();
+
 public slots:
         void showMainWindow();
 signals:
@@ -46,6 +49,7 @@ private:
       QString logUser;
       QHash<QTcpSocket*, QByteArray*> buffers; //bufor do przetrzymywania danych az dojda cale
       QHash<QTcpSocket*, qint32*> sizes;
+      void process();
 };
 
 #endif // CLIENT_H
