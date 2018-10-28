@@ -1,5 +1,6 @@
 #include "client.h"
 #include "ui_client.h"
+#include "filemanager.h"
 static inline qint32 ArrayToInt(QByteArray source);
 
 client::client(QWidget* parent)
@@ -64,6 +65,7 @@ void client::readFortune()
              fileList->updateAll(dane);
             fileList->setLogin(logUser);
             connect(fileList, SIGNAL(sendFile(QByteArray)), this, SLOT(sendFileToServer(QByteArray)));
+            connect(fileList, SIGNAL(getFile(QByteArray)), this, SLOT(downloadFromServer(QByteArray)));
             QMessageBox::information(this, tr("Komunikat aplikacji klienckiej"),
                 tr("Użytkownik %1 zalogowany pomyślnie!")
                                      .arg(logUser));
@@ -93,6 +95,7 @@ void client::readFortune()
         fileList->show();
         fileList->setLogin(logUser);
         connect(fileList, SIGNAL(sendFile(QByteArray)), this, SLOT(sendFileToServer(QByteArray)));
+        connect(fileList, SIGNAL(getFile(QByteArray)), this, SLOT(downloadFromServer(QByteArray)));
         QString response = dane.takeAt(0);
         QString trash = dane.takeAt(0);//------------------------------------------------
         QString trash2 = dane.takeAt(0);//-ZMIENNE USUWAJĄCE ZŁE ODP Z SERWERA-----------
@@ -110,7 +113,30 @@ void client::readFortune()
     }
     else if(check=="get")
     {
+        qDebug() << "Przyszedł plik";
+        QString login = dane.takeAt(0);
+        QString filename = dane.takeAt(0);
+        int toRemove = 4+login.length()+1+filename.length()+1;
+        if (login != "" && filename != "")
+        {
+                FileManager * fm = new FileManager(this);
+                QFile * plik = new QFile(filename);
+                fm->createDirectory(login);
+                if (!plik->open(QIODevice::ReadWrite))
+                {
 
+                }
+                else
+                {
+                    QByteArray buffer = line.remove(0,toRemove);
+                    plik->write(buffer);
+                    plik->close();
+                    fm->addFile(login,plik);
+                    qDebug() << "dodano";
+                    //tworzenie odpowiedzi dla klienta
+
+                }
+        }
     }
 
  qDebug() << line;
@@ -172,4 +198,9 @@ void client::sendFileToServer(QByteArray file)
 void client::on_logIn_clicked()
 {
     loginForm->show();
+}
+void client::downloadFromServer(QByteArray downloadString)
+{
+    qDebug() << "Rozpoczęto pobieranie";
+    writeData(downloadString);
 }

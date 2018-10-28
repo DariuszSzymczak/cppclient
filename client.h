@@ -31,6 +31,7 @@ private slots:
         void on_logIn_clicked();
         void sendFileToServer(QByteArray);
         void disconnectFromServer();
+        void downloadFromServer(QByteArray);
 public slots:
         void showMainWindow();
 signals:

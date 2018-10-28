@@ -31,13 +31,15 @@ SOURCES += \
         client.cpp \
     userregister.cpp \
     loginform.cpp \
-    filelist.cpp
+    filelist.cpp \
+    filemanager.cpp
 
 HEADERS += \
         client.h \
     userregister.h \
     loginform.h \
-    filelist.h
+    filelist.h \
+    filemanager.h
 
 FORMS += \
         client.ui \
