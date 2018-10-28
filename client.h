@@ -18,7 +18,7 @@ class client : public QMainWindow
 public:
     explicit client(QWidget *parent = nullptr);
     ~client();
-    bool connectToServer();
+
     void displayError(QLocalSocket::LocalSocketError);
     bool writeData(QByteArray);
 
@@ -26,11 +26,15 @@ private slots:
         void readFortune();
         void on_Register_clicked();
         void getRegisterData(QString);
-        void on_connectTo_clicked();
+        bool connectToServer();
         void sendLoginData(QString);
         void on_logIn_clicked();
+        void sendFileToServer(QByteArray);
+        void disconnectFromServer();
 public slots:
         void showMainWindow();
+signals:
+        void loginData(QString);
 private:
     LoginForm * loginForm;
     Ui::client *ui;
@@ -38,6 +42,7 @@ private:
     QTcpSocket  *socket;
     QString login;
     FileList * fileList;
+      QString logUser;
 };
 
 #endif // CLIENT_H

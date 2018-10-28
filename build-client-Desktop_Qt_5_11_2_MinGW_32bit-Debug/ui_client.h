@@ -39,12 +39,11 @@ public:
     QLabel *label_2;
     QLineEdit *server_port;
     QHBoxLayout *horizontalLayout_4;
-    QPushButton *connectToServer;
+    QPushButton *connectTo;
     QFrame *line;
     QVBoxLayout *verticalLayout_2;
     QPushButton *Register;
     QPushButton *logIn;
-    QLabel *label1;
     QMenuBar *menuBar;
     QMenu *menuKlient;
     QToolBar *mainToolBar;
@@ -54,7 +53,9 @@ public:
     {
         if (client->objectName().isEmpty())
             client->setObjectName(QStringLiteral("client"));
-        client->resize(616, 438);
+        client->resize(600, 400);
+        client->setMinimumSize(QSize(600, 400));
+        client->setMaximumSize(QSize(600, 400));
         client->setStyleSheet(QLatin1String("QToolTip {\n"
 "    border: 1px solid #76797C;\n"
 "    background-color: #5A7566;\n"
@@ -1341,7 +1342,7 @@ public:
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         verticalLayoutWidget = new QWidget(centralWidget);
         verticalLayoutWidget->setObjectName(QStringLiteral("verticalLayoutWidget"));
-        verticalLayoutWidget->setGeometry(QRect(10, 10, 601, 181));
+        verticalLayoutWidget->setGeometry(QRect(10, 20, 581, 181));
         verticalLayout = new QVBoxLayout(verticalLayoutWidget);
         verticalLayout->setSpacing(6);
         verticalLayout->setContentsMargins(11, 11, 11, 11);
@@ -1378,10 +1379,10 @@ public:
         horizontalLayout_4 = new QHBoxLayout();
         horizontalLayout_4->setSpacing(6);
         horizontalLayout_4->setObjectName(QStringLiteral("horizontalLayout_4"));
-        connectToServer = new QPushButton(verticalLayoutWidget);
-        connectToServer->setObjectName(QStringLiteral("connectToServer"));
+        connectTo = new QPushButton(verticalLayoutWidget);
+        connectTo->setObjectName(QStringLiteral("connectTo"));
 
-        horizontalLayout_4->addWidget(connectToServer);
+        horizontalLayout_4->addWidget(connectTo);
 
 
         verticalLayout->addLayout(horizontalLayout_4);
@@ -1409,13 +1410,10 @@ public:
 
         verticalLayout->addLayout(verticalLayout_2);
 
-        label1 = new QLabel(centralWidget);
-        label1->setObjectName(QStringLiteral("label1"));
-        label1->setGeometry(QRect(10, 210, 381, 20));
         client->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(client);
         menuBar->setObjectName(QStringLiteral("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 616, 25));
+        menuBar->setGeometry(QRect(0, 0, 600, 25));
         menuKlient = new QMenu(menuBar);
         menuKlient->setObjectName(QStringLiteral("menuKlient"));
         client->setMenuBar(menuBar);
@@ -1440,10 +1438,9 @@ public:
         serverName->setText(QApplication::translate("client", "localhost", nullptr));
         label_2->setText(QApplication::translate("client", "Port: ", nullptr));
         server_port->setText(QApplication::translate("client", "1024", nullptr));
-        connectToServer->setText(QApplication::translate("client", "Po\305\202\304\205cz ", nullptr));
+        connectTo->setText(QApplication::translate("client", "Po\305\202\304\205cz", nullptr));
         Register->setText(QApplication::translate("client", "Zarejestruj si\304\231", nullptr));
         logIn->setText(QApplication::translate("client", "Zaloguj si\304\231", nullptr));
-        label1->setText(QString());
         menuKlient->setTitle(QApplication::translate("client", "Klient", nullptr));
     } // retranslateUi
 

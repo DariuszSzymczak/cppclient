@@ -2,7 +2,7 @@
 #include "ui_userregister.h"
 
 userRegister::userRegister(QWidget *parent) :
-    QWidget(parent),
+    QWidget(parent, Qt::Window),
     ui(new Ui::userRegister)
 {
     ui->setupUi(this);

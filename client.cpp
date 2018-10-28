@@ -8,9 +8,16 @@ client::client(QWidget* parent)
 {
     ui->setupUi(this);
     socket = new QTcpSocket(this);
+    //--FORMULARZ LOGOWANIA------------------
     loginForm = new LoginForm(this);
-    loginForm->hide();
+    connect(loginForm, SIGNAL(loginUser(QString)), this, SLOT(sendLoginData(QString)));
+    //--POBIERANIE DANYCH Z SERWERA------------------------------------
     connect(socket, SIGNAL(readyRead()), this, SLOT(readFortune()));
+    //--FORMULARZ REJESTRACJI
+    registerForm = new userRegister(this);
+    connect(registerForm, SIGNAL(registerUser(QString)), this, SLOT(getRegisterData(QString)));
+
+    connect(ui->connectTo, SIGNAL(clicked()), this, SLOT(connectToServer()));
     ui->logIn->setDisabled(1);
     ui->Register->setDisabled(1);
 }
@@ -41,32 +48,64 @@ void client::readFortune()
     QList<QByteArray> dane = line.split('|');
     QString check = dane.takeAt(0);
 
+
     if (check == "log")
     {
         QString response = dane.takeAt(0);
-        if(response == "1"){
-            loginForm->close();
+        if(response == "success")
+        {
             fileList = new FileList(this);
+            loginForm->close();
             fileList->show();
-        } else {
-            loginForm->setResponse("Niepoprawny login lub hasło");
+            logUser = dane.takeAt(0);
+            QString trash = dane.takeAt(0);//------------------------------------------------
+            QString trash2 = dane.takeAt(0);//-ZMIENNE USUWAJĄCE ZŁE ODP Z SERWERA-----------
+            QString trash3 = dane.takeAt(0);//-----------------------------------------------
+             fileList->updateAll(dane);
+            fileList->setLogin(logUser);
+            connect(fileList, SIGNAL(sendFile(QByteArray)), this, SLOT(sendFileToServer(QByteArray)));
+            QMessageBox::information(this, tr("Komunikat aplikacji klienckiej"),
+                tr("Użytkownik %1 zalogowany pomyślnie!")
+                                     .arg(logUser));
+            }
+            else if(response == "error")
+            {
+                QMessageBox::information(this, tr("Komunikat aplikacji klienckiej"),
+                    tr("Błędny login lub hasło"));
+            }
+            qDebug() << "Response  " << response;
         }
-        qDebug() << "Response  " << response;
-    }
     else if(check == "reg")
     {
-                QString login = dane.takeAt(0);
-                if(login != "")
-                {
-                    QString password = dane.takeAt(0);
-                QMessageBox::information(this, tr("Komunikat aplikacji klienckiej"),
-                    tr("Użytkownik %1 zarejestrowany pomyślnie!\nHasło: %2")
-                                         .arg(login).arg(password));
-                }
-
-     }
-    else if(check== "send")
+         QString login = dane.takeAt(0);
+         if(login != "")
+         {
+             QString password = dane.takeAt(0);
+             QMessageBox::information(this, tr("Komunikat aplikacji klienckiej"),
+             tr("Użytkownik %1 zarejestrowany pomyślnie!\nHasło: %2")
+             .arg(login).arg(password));
+         }
+    }
+    else if(check == "send")
     {
+        qDebug() << "POWINNO UPDATOWAC";
+        fileList = new FileList(this);
+        fileList->show();
+        fileList->setLogin(logUser);
+        connect(fileList, SIGNAL(sendFile(QByteArray)), this, SLOT(sendFileToServer(QByteArray)));
+        QString response = dane.takeAt(0);
+        QString trash = dane.takeAt(0);//------------------------------------------------
+        QString trash2 = dane.takeAt(0);//-ZMIENNE USUWAJĄCE ZŁE ODP Z SERWERA-----------
+        QString trash3 = dane.takeAt(0);//-----------------------------------------------
+        fileList->updateAll(dane);
+        if(response == "success")
+        {
+            fileList->showSuccess();
+        }
+        else
+        {
+            fileList->showError();
+        }
 
     }
     else if(check=="get")
@@ -88,7 +127,11 @@ bool client::writeData(QByteArray data)
     else
         return false;
 }
-
+void client::disconnectFromServer()
+{
+    qDebug() << "rozlaczono";
+ socket->disconnectFromHost();
+}
 //-----------------------------------------------------
 client::~client()
 {
@@ -100,9 +143,6 @@ void client::showMainWindow()
 }
 void client::on_Register_clicked()
 {
-    registerForm = new userRegister(this);
-
-    connect(registerForm, SIGNAL(registerUser(QString)), this, SLOT(getRegisterData(QString)));
     registerForm->show();
 }
 
@@ -123,16 +163,13 @@ void client::sendLoginData(QString loginString)
     writeData(regArray);
 }
 
-void client::on_connectTo_clicked()
+void client::sendFileToServer(QByteArray file)
 {
-    connectToServer();
+    qDebug() << "Rozpoczeto przesylanie";
+    writeData(file);
 }
 
 void client::on_logIn_clicked()
 {
-
     loginForm->show();
-    ui->centralWidget->hide();
-    connect(loginForm, SIGNAL(closeWindow()), this, SLOT(showMainWindow()));
-    connect(loginForm, SIGNAL(loginUser(QString)), this, SLOT(sendLoginData(QString)));
 }

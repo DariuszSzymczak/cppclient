@@ -15,7 +15,6 @@ public:
     explicit LoginForm(QWidget *parent = nullptr);
     QString getLogin();
     QString getPassword();
-    void setResponse(QString);
     ~LoginForm();
 
 private slots:
@@ -23,7 +22,7 @@ private slots:
     void on_loginButton_clicked();
 
 signals:
-    void closeWindow();
+
     void loginUser(QString);
 private:
     Ui::LoginForm *ui;

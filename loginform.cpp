@@ -2,7 +2,7 @@
 #include "ui_loginform.h"
 
 LoginForm::LoginForm(QWidget *parent) :
-    QWidget(parent),
+    QWidget(parent, Qt::Window),
     ui(new Ui::LoginForm)
 {
     ui->setupUi(this);
@@ -11,10 +11,6 @@ LoginForm::LoginForm(QWidget *parent) :
 LoginForm::~LoginForm()
 {
     delete ui;
-}
-
-void LoginForm::setResponse(QString cos){
-    ui->succesLabel->setText(cos);
 }
 
 QString LoginForm::getLogin(){
@@ -27,7 +23,8 @@ QString LoginForm::getPassword(){
 
 void LoginForm::on_closeButton_clicked()
 {
-   emit closeWindow();
+
+   this->close();
 }
 
 void LoginForm::on_loginButton_clicked()
