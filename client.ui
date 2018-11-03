@@ -1376,6 +1376,19 @@ QDateEdit::down-arrow:focus {
      </item>
     </layout>
    </widget>
+   <widget class="QLabel" name="clientIcon">
+    <property name="geometry">
+     <rect>
+      <x>510</x>
+      <y>260</y>
+      <width>64</width>
+      <height>64</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">

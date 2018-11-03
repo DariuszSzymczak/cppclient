@@ -6,8 +6,8 @@ FileList::FileList(QWidget *parent) :
     ui(new Ui::FileList)
 {
     ui->setupUi(this);
-
-
+    QPixmap pic(":/client/list.png");
+    ui->listIcon->setPixmap(pic);
 }
 
 FileList::~FileList()
@@ -17,6 +17,8 @@ FileList::~FileList()
 
 void FileList::on_logoutButton_clicked()
 {
+    QMessageBox::information (this, tr("Komunikat aplikacji klienckiej"),
+        tr("Wylogowano pomyślnie."));
 
     this->close();
 }
@@ -30,7 +32,10 @@ void FileList::updateAll(QList<QByteArray> lista)
 {
     foreach(QString files, lista)
     {
+        if(files!="")
+        {
         ui->listWidget->addItem(files);
+        }
     }
 }
 void FileList::showSuccess()
@@ -77,4 +82,6 @@ void FileList::on_downloadButton_clicked()
     downloadString.append("get|"+login+"|"+filename+"|");
     emit getFile(downloadString);
     qDebug() << downloadString;
+    QMessageBox::information(this, tr("Komunikat aplikacji klienckiej"),
+        tr("Plik został pobrany pomyślnie."));
 }

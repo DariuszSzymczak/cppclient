@@ -8,12 +8,14 @@ client::client(QWidget* parent)
     , ui(new Ui::client)
 {
     ui->setupUi(this);
+    QPixmap pic(":/client/client.png");
+    ui->clientIcon->setPixmap(pic);
     socket = new QTcpSocket(this);
     //--FORMULARZ LOGOWANIA------------------
     loginForm = new LoginForm(this);
     connect(loginForm, SIGNAL(loginUser(QString)), this, SLOT(sendLoginData(QString)));
     //--POBIERANIE DANYCH Z SERWERA------------------------------------
-    connect(socket, SIGNAL(readyRead()), this, SLOT(readFortune()));
+    connect(socket, SIGNAL(readyRead()), this, SLOT(getResponseFromServer()));
     //--FORMULARZ REJESTRACJI
     registerForm = new userRegister(this);
     connect(registerForm, SIGNAL(registerUser(QString)), this, SLOT(getRegisterData(QString)));
@@ -56,7 +58,7 @@ void client::process()
     buffers.insert(socket, buffer);
     sizes.insert(socket, s);
 }
-void client::readFortune()
+void client::getResponseFromServer()
 {
     //ZOBACZYMY CZY DZIALA
 

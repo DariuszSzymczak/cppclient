@@ -23,7 +23,7 @@ public:
     bool writeData(QByteArray);
 
 private slots:
-        void readFortune();
+        void getResponseFromServer();
         void on_Register_clicked();
         void getRegisterData(QString);
         bool connectToServer();

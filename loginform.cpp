@@ -7,6 +7,8 @@ LoginForm::LoginForm(QWidget *parent) :
     ui(new Ui::LoginForm)
 {
     ui->setupUi(this);
+    QPixmap pic(":/client/login.png");
+    ui->logIcon->setPixmap(pic);
 }
 
 LoginForm::~LoginForm()

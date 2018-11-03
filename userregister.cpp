@@ -6,7 +6,8 @@ userRegister::userRegister(QWidget *parent) :
     ui(new Ui::userRegister)
 {
     ui->setupUi(this);
-
+    QPixmap pic(":/client/note.png");
+    ui->regIcon->setPixmap(pic);
 }
 
 userRegister::~userRegister()

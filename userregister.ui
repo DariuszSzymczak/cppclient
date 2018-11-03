@@ -1291,7 +1291,7 @@ QDateEdit::down-arrow:focus {
      <x>10</x>
      <y>10</y>
      <width>381</width>
-     <height>331</height>
+     <height>251</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout">
@@ -1342,6 +1342,19 @@ QDateEdit::down-arrow:focus {
      </layout>
     </item>
    </layout>
+  </widget>
+  <widget class="QLabel" name="regIcon">
+   <property name="geometry">
+    <rect>
+     <x>170</x>
+     <y>260</y>
+     <width>64</width>
+     <height>64</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
   </widget>
  </widget>
  <resources/>
