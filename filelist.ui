@@ -1321,6 +1321,13 @@ QDateEdit::down-arrow:focus {
      </widget>
     </item>
     <item>
+     <widget class="QPushButton" name="delButton">
+      <property name="text">
+       <string>Usuń wybrany plik</string>
+      </property>
+     </widget>
+    </item>
+    <item>
      <layout class="QHBoxLayout" name="horizontalLayout">
       <item>
        <widget class="QPushButton" name="logoutButton">

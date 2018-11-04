@@ -32,7 +32,7 @@ private slots:
         void sendFileToServer(QByteArray);
         void downloadFromServer(QByteArray);
         void on_disconnectClient_clicked();
-
+        void deleteFromServer(QByteArray);
         void on_connectTo_clicked();
 
 public slots:

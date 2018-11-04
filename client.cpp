@@ -9,7 +9,7 @@ client::client(QWidget* parent)
 {
     ui->setupUi(this);
     QPixmap pic(":/client/client.png");
-    ui->clientIcon->setPixmap(pic);
+    ui->cliIcon->setPixmap(pic);
     socket = new QTcpSocket(this);
     //--FORMULARZ LOGOWANIA------------------
     loginForm = new LoginForm(this);
@@ -107,6 +107,7 @@ void client::getResponseFromServer()
                         fileList->setLogin(logUser);
                         connect(fileList, SIGNAL(sendFile(QByteArray)), this, SLOT(sendFileToServer(QByteArray)));
                         connect(fileList, SIGNAL(getFile(QByteArray)), this, SLOT(downloadFromServer(QByteArray)));
+                        connect(fileList, SIGNAL(delFile(QByteArray)), this, SLOT(deleteFromServer(QByteArray)));
                         QMessageBox::information(this, tr("Komunikat aplikacji klienckiej"),
                             tr("Użytkownik %1 zalogowany pomyślnie!")
                                                  .arg(logUser));
@@ -137,6 +138,7 @@ void client::getResponseFromServer()
                     fileList->setLogin(logUser);
                     connect(fileList, SIGNAL(sendFile(QByteArray)), this, SLOT(sendFileToServer(QByteArray)));
                     connect(fileList, SIGNAL(getFile(QByteArray)), this, SLOT(downloadFromServer(QByteArray)));
+                    connect(fileList, SIGNAL(delFile(QByteArray)), this, SLOT(deleteFromServer(QByteArray)));
                     QString response = dane.takeAt(0);
                     QString trash = dane.takeAt(0);//------------------------------------------------
                     QString trash2 = dane.takeAt(0);//-ZMIENNE USUWAJĄCE ZŁE ODP Z SERWERA-----------
@@ -145,6 +147,10 @@ void client::getResponseFromServer()
                     if(response == "success")
                     {
                         fileList->showSuccess();
+                    }
+                    else if(response == "deleted")
+                    {
+                        fileList->showDeleted();
                     }
                     else
                     {
@@ -174,10 +180,13 @@ void client::getResponseFromServer()
                                 plik->close();
                                 fm->addFile(login,plik);
                                 qDebug() << "dodano";
-                                //tworzenie odpowiedzi dla klienta
 
                             }
                     }
+                }
+                else if(check=="del")
+                {
+
                 }
 
 
@@ -235,10 +244,17 @@ void client::sendFileToServer(QByteArray file)
     writeData(file);
 }
 
+//Metoda wysylajaca dane do usuniecia z serwera
+void client::deleteFromServer(QByteArray delString)
+{
+    writeData(delString);
+}
 void client::on_logIn_clicked()
 {
     loginForm->show();
 }
+
+//Metoda wysylajaca zadanie pobrania pliku z serwera
 void client::downloadFromServer(QByteArray downloadString)
 {
     qDebug() << "Rozpoczęto pobieranie";

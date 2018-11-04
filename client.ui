@@ -1376,7 +1376,7 @@ QDateEdit::down-arrow:focus {
      </item>
     </layout>
    </widget>
-   <widget class="QLabel" name="clientIcon">
+   <widget class="QLabel" name="cliIcon">
     <property name="geometry">
      <rect>
       <x>510</x>

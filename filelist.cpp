@@ -43,6 +43,11 @@ void FileList::showSuccess()
     QMessageBox::information(this, tr("Komunikat aplikacji klienckiej"),
         tr("Plik został przesłany pomyślnie."));
 }
+void FileList::showDeleted()
+{
+    QMessageBox::information(this, tr("Komunikat aplikacji klienckiej"),
+        tr("Plik został skasowany pomyślnie."));
+}
 void FileList::showError()
 {
     QMessageBox::critical(this, tr("Komunikat aplikacji klienckiej"),
@@ -84,4 +89,17 @@ void FileList::on_downloadButton_clicked()
     qDebug() << downloadString;
     QMessageBox::information(this, tr("Komunikat aplikacji klienckiej"),
         tr("Plik został pobrany pomyślnie."));
+}
+
+void FileList::on_delButton_clicked()
+{
+    QString filename = ui->listWidget->currentItem()->text();
+    if(filename!="")
+    {
+    QByteArray downloadString;
+    downloadString.append("del|"+login+"|"+filename+"|");
+    emit delFile(downloadString);
+    qDebug() << downloadString;
+    this->close();
+    }
 }
